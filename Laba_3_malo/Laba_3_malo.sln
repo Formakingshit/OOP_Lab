@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Laba_3_malo", "Laba_3_malo\Laba_3_malo.vcxproj", "{EF654764-FF44-4B23-AB46-1BC045E33E95}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF654764-FF44-4B23-AB46-1BC045E33E95}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EF654764-FF44-4B23-AB46-1BC045E33E95}.Debug|Win32.Build.0 = Debug|Win32
+		{EF654764-FF44-4B23-AB46-1BC045E33E95}.Release|Win32.ActiveCfg = Release|Win32
+		{EF654764-FF44-4B23-AB46-1BC045E33E95}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
