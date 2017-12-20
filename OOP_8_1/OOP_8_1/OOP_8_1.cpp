@@ -10,7 +10,7 @@
 using namespace std; 
 
 #define M_PI      3.14159265358979323846
-#define N					1000000
+#define N					10000000
 
 class IntThrow {
 	int *a;
@@ -117,13 +117,14 @@ protected:
 
 public:
 	list_of_rhomb();
+	list_of_rhomb(int &);
 
 	circle_in_rhomb *get_many_circle_in();
 	circle_in_rhomb *operator [](int i);
 	
 	virtual void get_results();
 	
-	void mysort();
+	void mysort(int);
 
 	friend ostream &operator << (ostream &stream, const list_of_rhomb& dt){
 		cout<<setw(9)<<"X"<<setw(9)<<"Y"<<setw(9)<<"Side"<<setw(9)<<"Radius"<<setw(9)<<"A_W_C"<<endl;	
@@ -142,8 +143,8 @@ public:
 
 
 dot::dot(){
-	x = rand();
-	y = rand();
+	x = rand() % 1024;
+	y = rand() % 1024;
 };
 
 dot::dot(int x, int y){
@@ -266,6 +267,9 @@ list_of_rhomb::list_of_rhomb(){
 	many_circle_in = new circle_in_rhomb[N];
 }
 
+list_of_rhomb::list_of_rhomb(int& size){
+	many_circle_in = new circle_in_rhomb[size];
+}
 circle_in_rhomb *list_of_rhomb::get_many_circle_in(){
 	return many_circle_in;
 }
@@ -278,16 +282,50 @@ circle_in_rhomb	*list_of_rhomb::operator[](int i){
 	return (many_circle_in + i);
 }
 
-void list_of_rhomb::mysort(){
-	int *arrInt = new int [N];
-	double *arrDouble = new double [N];
+void list_of_rhomb::mysort(int size){
+	unsigned int start_time; // початковий час
+  unsigned int end_time; // кінцевий час
+  unsigned int search_time; // шуканий час
 
-	for(int i = 0 ; i < N; i ++){
+	int *arrInt = new int [size];
+	int tempI;
+	double *arrDouble = new double [size];
+	double tempD;
+
+	for(register int i = 0; i < size; i++){
 		arrInt[i] = many_circle_in[i].circle::get_x();
 		arrDouble[i] = many_circle_in[i].get_area_without_circle();
 	}
+/*
+	for(int i = 0; i < size; i++){
+		cout<<setw(10)<<arrInt[i]<<"   "<<setw(10)<<arrDouble[i]<<endl;
+	}
+*/
+	start_time = clock();
+	register int i = size - 1;
 
-	
+	for(register int count = 0; count < size - 1; count++){
+		for(; i > 0 + count; i--){
+			if(arrInt[i] < arrInt[i - 1]){
+				tempI = arrInt[i];
+				arrInt[i] = arrInt[i - 1];
+				arrInt[i - 1] = tempI;
+			}	
+			if(arrDouble[i] < arrDouble[i - 1]){
+				tempD = arrDouble[i];
+				arrDouble[i] = arrDouble[i - 1];
+				arrDouble[i - 1] = tempD;
+			}
+		}
+	}
+	end_time = clock();
+	search_time = end_time - start_time;
+	cout<<"Time my sort(int and double):"<<search_time<<endl;
+/*	cout<<endl;
+	for(int i = 0; i < N; i++){
+		cout<<setw(10)<<arrInt[i]<<"   "<<setw(10)<<arrDouble[i]<<endl;
+	}
+*/
 }
 
 void list_of_rhomb::get_results(){
@@ -326,7 +364,6 @@ template <class T> void saving<T>::inBinary(){
 	char* FName = "watchresult1.txt";
 	
 	ofstream out(FName, ofstream::binary | ofstream::out);
-
 	for(int i = 0; i < N; i++) {
 		out<<setw(9)<<example[i]->circle::get_x()<<setw(9)<<example[i]->circle::get_y()
 			<<setw(9)<<example[i]->get_side_of()<<setw(9)<<example[i]->get_radius()<<setw(9)<<example[i]->get_area_without_circle()<<endl;
@@ -379,21 +416,21 @@ bool MySortDouble(double a, double b){
 	return a < b ;
 }
 
-void Librarysort(){
+void Librarysort(int &size){
 	unsigned int start_time; // початковий час
   unsigned int end_time; // кінцевий час
   unsigned int search_time; // шуканий час
 
-	list_of_rhomb l_o_r;
+	list_of_rhomb l_o_r(size);
 		
-	vector <int> v_i(N);
-	for(int i = 0; i < N; i++){
+	vector <int> v_i(size);
+	for(int i = 0; i < size; i++){
 		v_i[i] = l_o_r.get_many_circle_in()[i].circle::get_x();
 		//cout<<v_i[i]<<endl;
 	}
 
-	vector <double> v_d(N);
-	for(int i = 0; i < N; i++){
+	vector <double> v_d(size);
+	for(int i = 0; i < size; i++){
 		v_d[i] = l_o_r.get_many_circle_in()[i].get_area_without_circle();
 		//cout<<v_d[i]<<endl;
 	}
@@ -419,6 +456,18 @@ void Librarysort(){
 
 }
 
+void MakeSortWithDiffSize(){
+		for(register int size = 10; size < N; size*= 10){
+			list_of_rhomb l_o_r(size);
+
+			Librarysort(size);
+			cout<<endl<<endl;
+			l_o_r.mysort(size);
+			cout<<"-----------------------------------------------------------------------";
+			cout<<endl<<endl;
+		}
+}
+
 int main(){
 	dot *point = new dot;
 	cout<<"Base class: "<<typeid(*point).name()<<endl;
@@ -429,7 +478,6 @@ int main(){
 		
 	IntThrow *somethrow;
 	circle somecircle;
-	list_of_rhomb l_o_r;
 
 	try{
 		somecircle.init();
@@ -443,11 +491,7 @@ int main(){
 			somethrow->TakeThrow();
 		}
 		cout<<endl<<endl;
-		
-		Librarysort();
-		cout<<endl<<endl;
-
-		
+		MakeSortWithDiffSize();
 	}
 	catch(int*){
 		cout<<"Erro int type"<<endl;
@@ -455,5 +499,4 @@ int main(){
 	catch(double*){
 		cout<<"Erro double type"<<endl;
 	}
-
 }
